@@ -1,20 +1,29 @@
-use rand::Rng;
+use prost::Message;
+use rand::{
+    distributions::{Distribution, Uniform},
+    thread_rng,
+};
+use zeromq_test::data::{Action, Image};
+use zmq::Context;
 
 fn main() {
-    let context = zmq::Context::new();
+    let context = Context::new();
     let publisher = context.socket(zmq::PUB).unwrap();
 
     assert!(publisher.bind("tcp://*:5556").is_ok());
-    assert!(publisher.bind("ipc://weather.ipc").is_ok());
+    assert!(publisher.bind("ipc://action.ipc").is_ok());
 
     let mut rng = rand::thread_rng();
+    let angle_dist = Uniform::new(0.0, 2. * std::f64::consts::PI);
+    let speed_dist = Uniform::new(0.0, 5. as f64);
 
     loop {
-        let zipcode = rng.gen_range(0..100_000);
-        let temperature = rng.gen_range(-80..135);
-        let relhumidity = rng.gen_range(10..60);
-
-        let update = format!("{:05} {} {}", zipcode, temperature, relhumidity);
-        publisher.send(&update, 0).unwrap();
+        let action = Action {
+            angle: angle_dist.sample(&mut rng),
+            speed: speed_dist.sample(&mut rng),
+        };
+        let mut buf: Vec<u8> = Vec::new();
+        action.encode(&mut buf).unwrap();
+        publisher.send(&buf, 0).unwrap();
     }
 }

@@ -9,3 +9,7 @@ edition = "2018"
 [dependencies]
 zmq = { version = "0.9", features = ["vendored"] }
 rand = "0.8"
+prost = "0.7"
+
+[build-dependencies]
+prost-build = "0.7"

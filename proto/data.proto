@@ -16,3 +16,9 @@ message Image {
     int32 channels = 4;
     bytes data = 5;
 }
+
+message SubscribeRequest {}
+
+service TopicPublisher {
+    rpc subscribe(SubscribeRequest) returns (stream Image) {}
+}

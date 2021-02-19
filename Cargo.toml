@@ -5,8 +5,10 @@ authors = ["Ricardo Delfin <me@rdelfin.com>"]
 edition = "2018"
 
 [dependencies]
+ctrlc = "3.1.7"
 prost = "0.7"
 rand = "0.8"
+spin_sleep = "1.0.0"
 structopt = "0.3.21"
 zmq = { version = "0.9", features = ["vendored"] }
 

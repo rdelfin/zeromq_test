@@ -1,4 +1,5 @@
 use prost::Message;
+use spin_sleep::LoopHelper;
 use std::{error, fs, path::PathBuf, time::SystemTime};
 use structopt::StructOpt;
 use zeromq_test::data::{Action, Image};
@@ -22,10 +23,15 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
     assert!(publisher.bind("ipc://camera.ipc").is_ok());
 
+    let mut loop_helper = LoopHelper::builder()
+        .report_interval_s(0.5) // report every half a second
+        .build_with_target_rate(25.0);
     let images = load_images(opt.image_path, &opt.extension)?;
     let mut idx = 0;
 
     loop {
+        loop_helper.loop_start();
+
         idx = (idx + 1) % images.len();
         let ts = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)?
@@ -35,6 +41,11 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         let mut buf: Vec<u8> = Vec::new();
         image.encode(&mut buf).unwrap();
         publisher.send(&buf, 0).unwrap();
+
+        if let Some(fps) = loop_helper.report_rate() {
+            println!("FPS: {:.4}", fps)
+        }
+        loop_helper.loop_sleep();
     }
 }
 

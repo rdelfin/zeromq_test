@@ -1,6 +1,6 @@
 use capnp::{
     message::{Builder, HeapAllocator},
-    serialize_packed,
+    serialize,
 };
 use spin_sleep::LoopHelper;
 use std::{error, fs, path::PathBuf, time::SystemTime};
@@ -42,7 +42,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
         let img = image_from_data(&images[idx], ts);
         let mut buf: Vec<u8> = Vec::new();
-        serialize_packed::write_message(&mut buf, &img)?;
+        serialize::write_message(&mut buf, &img)?;
         publisher.send(&buf, 0).unwrap();
 
         if let Some(fps) = loop_helper.report_rate() {

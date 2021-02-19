@@ -1,4 +1,4 @@
-use capnp::{message::ReaderOptions, serialize_packed};
+use capnp::{message::ReaderOptions, serialize};
 use std::{
     error,
     sync::{
@@ -33,13 +33,12 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                 continue;
             }
         };
-        let message =
-            match serialize_packed::read_message(&mut msg.as_slice(), ReaderOptions::new()) {
-                Ok(i) => i,
-                Err(_) => {
-                    continue;
-                }
-            };
+        let message = match serialize::read_message(&mut msg.as_slice(), ReaderOptions::new()) {
+            Ok(i) => i,
+            Err(_) => {
+                continue;
+            }
+        };
         let img = match message.get_root::<image::Reader>() {
             Ok(img) => img,
             Err(_) => {

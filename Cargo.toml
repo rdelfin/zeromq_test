@@ -5,9 +5,10 @@ authors = ["Ricardo Delfin <me@rdelfin.com>"]
 edition = "2018"
 
 [dependencies]
-zmq = { version = "0.9", features = ["vendored"] }
-rand = "0.8"
 prost = "0.7"
+rand = "0.8"
+structopt = "0.3.21"
+zmq = { version = "0.9", features = ["vendored"] }
 
 [build-dependencies]
 prost-build = "0.7"

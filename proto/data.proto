@@ -10,8 +10,9 @@ message Action {
 
 // An image
 message Image {
-    int32 width = 1;
-    int32 height = 2;
-    int32 pixel_depth = 3;
-    bytes data = 4;
+    uint64 timestamp = 1;
+    int32 width = 2;
+    int32 height = 3;
+    int32 channels = 4;
+    bytes data = 5;
 }

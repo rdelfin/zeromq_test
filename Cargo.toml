@@ -5,6 +5,7 @@ authors = ["Ricardo Delfin <me@rdelfin.com>"]
 edition = "2018"
 
 [dependencies]
+capnp = "0.14"
 ctrlc = "3.1.7"
 prost = "0.7"
 rand = "0.8"
@@ -14,3 +15,4 @@ zmq = { version = "0.9", features = ["vendored"] }
 
 [build-dependencies]
 prost-build = "0.7"
+capnpc = "0.14"

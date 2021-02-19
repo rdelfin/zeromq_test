@@ -1,4 +1,4 @@
-use prost::Message;
+use capnp::{message::ReaderOptions, serialize_packed};
 use std::{
     error,
     sync::{
@@ -7,7 +7,7 @@ use std::{
     },
     time::SystemTime,
 };
-use zeromq_test::data::Image;
+use zeromq_test::capnp_structs::data::image;
 
 fn main() -> Result<(), Box<dyn error::Error>> {
     println!("Collecting updates from action server...");
@@ -33,8 +33,15 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                 continue;
             }
         };
-        let image = match Image::decode(&msg[..]) {
-            Ok(i) => i,
+        let message =
+            match serialize_packed::read_message(&mut msg.as_slice(), ReaderOptions::new()) {
+                Ok(i) => i,
+                Err(_) => {
+                    continue;
+                }
+            };
+        let img = match message.get_root::<image::Reader>() {
+            Ok(img) => img,
             Err(_) => {
                 continue;
             }
@@ -42,15 +49,15 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         let ts = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)?
             .as_nanos() as u64;
-        let diff = (ts - image.timestamp) as f64 / 1e6;
+        let diff = (ts - img.get_timestamp()) as f64 / 1e6;
         latencies.push(diff);
         println!(
             "Got image. Latency: {:.4}ms width: {}, height: {}, channels: {}, bytes: {}",
             diff,
-            image.width,
-            image.height,
-            image.channels,
-            image.data.len()
+            img.get_width(),
+            img.get_height(),
+            img.get_channels(),
+            img.get_data()?.len()
         );
     }
 

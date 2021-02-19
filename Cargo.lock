@@ -45,6 +45,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b700ce4376041dcd0a327fd0097c41095743c4c8af8887265942faf1100bd040"
 
 [[package]]
+name = "capnp"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee33f13b9419d35f9ae6e0ee2e5ef6bd059a4d0da2fda16a88ddaf57dfe9acca"
+
+[[package]]
+name = "capnpc"
+version = "0.14.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76c50eb1605fb64e5cbf9a22c244ea4136516f1aa38ee8e2c8f94a080370521e"
+dependencies = [
+ "capnp",
+]
+
+[[package]]
 name = "cc"
 version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -578,6 +593,8 @@ dependencies = [
 name = "zeromq_test"
 version = "0.1.0"
 dependencies = [
+ "capnp",
+ "capnpc",
  "ctrlc",
  "prost",
  "prost-build",

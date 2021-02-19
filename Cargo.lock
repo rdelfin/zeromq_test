@@ -607,20 +607,17 @@ dependencies = [
 [[package]]
 name = "zmq"
 version = "0.9.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aad98a7a617d608cd9e1127147f630d24af07c7cd95ba1533246d96cbdd76c66"
+source = "git+https://github.com/erickt/rust-zmq?rev=eede4315e10eccddec4348561c42ded534e6001e#eede4315e10eccddec4348561c42ded534e6001e"
 dependencies = [
  "bitflags",
  "libc",
- "log",
  "zmq-sys",
 ]
 
 [[package]]
 name = "zmq-sys"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d33a2c51dde24d5b451a2ed4b488266df221a5eaee2ee519933dc46b9a9b3648"
+source = "git+https://github.com/erickt/rust-zmq?rev=eede4315e10eccddec4348561c42ded534e6001e#eede4315e10eccddec4348561c42ded534e6001e"
 dependencies = [
  "libc",
  "metadeps",

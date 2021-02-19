@@ -22,9 +22,10 @@ struct Opt {
 fn main() -> Result<(), Box<dyn error::Error>> {
     let opt = Opt::from_args();
     let context = Context::new();
+    context.set_io_threads(4)?;
     let publisher = context.socket(zmq::PUB).unwrap();
 
-    assert!(publisher.bind("ipc://camera.ipc").is_ok());
+    assert!(publisher.bind("ipc://camera.sock").is_ok());
 
     let mut loop_helper = LoopHelper::builder()
         .report_interval_s(0.5) // report every half a second

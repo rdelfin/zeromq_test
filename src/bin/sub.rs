@@ -13,8 +13,9 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     println!("Collecting updates from action server...");
 
     let context = zmq::Context::new();
+    context.set_io_threads(4)?;
     let subscriber = context.socket(zmq::SUB).unwrap();
-    assert!(subscriber.connect("ipc://camera.ipc").is_ok());
+    assert!(subscriber.connect("ipc://camera.sock").is_ok());
     assert!(subscriber.set_subscribe(b"").is_ok());
 
     let mut latencies: Vec<f64> = vec![];

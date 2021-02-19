@@ -11,7 +11,7 @@ prost = "0.7"
 rand = "0.8"
 spin_sleep = "1.0.0"
 structopt = "0.3.21"
-zmq = { version = "0.9", features = ["vendored"] }
+zmq = { git = "https://github.com/erickt/rust-zmq", rev = "eede4315e10eccddec4348561c42ded534e6001e", features = ["vendored"] }
 
 [build-dependencies]
 prost-build = "0.7"

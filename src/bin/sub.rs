@@ -13,9 +13,12 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     println!("Collecting updates from action server...");
 
     let context = zmq::Context::new();
-    let subscriber = context.socket(zmq::SUB).unwrap();
-    assert!(subscriber.connect("ipc://camera.ipc").is_ok());
-    assert!(subscriber.set_subscribe(b"").is_ok());
+    let img_subscriber = context.socket(zmq::SUB).unwrap();
+    let data_subscriber = context.socket(zmq::SUB).unwrap();
+    assert!(img_subscriber.connect("ipc://camera.ipc").is_ok());
+    assert!(img_subscriber.set_subscribe(b"").is_ok());
+    assert!(data_subscriber.connect("ipc://camera_data.ipc").is_ok());
+    assert!(data_subscriber.set_subscribe(b"").is_ok());
 
     let mut latencies: Vec<f64> = vec![];
 
@@ -27,7 +30,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     })
     .expect("Error setting Ctrl-C handler");
     while running.load(Ordering::SeqCst) {
-        let msg = match subscriber.recv_bytes(0) {
+        let msg = match img_subscriber.recv_bytes(0) {
             Ok(m) => m,
             Err(_) => {
                 continue;
@@ -39,14 +42,24 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                 continue;
             }
         };
+        let data = match data_subscriber.recv_bytes(0) {
+            Ok(m) => m,
+            Err(_) => {
+                continue;
+            }
+        };
         let ts = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)?
             .as_nanos() as u64;
         let diff = (ts - image.timestamp) as f64 / 1e6;
         latencies.push(diff);
         println!(
-            "Got image. Latency: {:.4}ms width: {}, height: {}, channels: {}",
-            diff, image.width, image.height, image.channels,
+            "Got image. Latency: {:.4}ms width: {}, height: {}, channels: {}, bytes: {}",
+            diff,
+            image.width,
+            image.height,
+            image.channels,
+            data.len(),
         );
     }
 

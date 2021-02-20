@@ -19,9 +19,11 @@ struct Opt {
 fn main() -> Result<(), Box<dyn error::Error>> {
     let opt = Opt::from_args();
     let context = Context::new();
-    let publisher = context.socket(zmq::PUB).unwrap();
+    let img_publisher = context.socket(zmq::PUB).unwrap();
+    let data_publisher = context.socket(zmq::PUB).unwrap();
 
-    assert!(publisher.bind("ipc://camera.ipc").is_ok());
+    assert!(img_publisher.bind("ipc://camera.ipc").is_ok());
+    assert!(data_publisher.bind("ipc://camera_data.ipc").is_ok());
 
     let mut loop_helper = LoopHelper::builder()
         .report_interval_s(0.5) // report every half a second
@@ -40,8 +42,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         let image = image_from_data(&images[idx], ts);
         let mut buf: Vec<u8> = Vec::new();
         image.encode(&mut buf).unwrap();
-        publisher.send(&buf, 0).unwrap();
-        publisher.send(&images[idx], 0).unwrap();
+        img_publisher.send(&buf, 0).unwrap();
+        data_publisher.send(&images[idx], 0).unwrap();
 
         if let Some(fps) = loop_helper.report_rate() {
             println!("FPS: {:.4}", fps)

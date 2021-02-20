@@ -52,9 +52,13 @@ impl TopicPublisher for TopicPublisherService {
                     .unwrap()
                     .as_nanos() as u64;
 
-                tx.send(Ok(image_from_data(&images[idx], ts)))
-                    .await
-                    .unwrap();
+                match tx.send(Ok(image_from_data(&images[idx], ts))).await {
+                    Ok(_) => {}
+                    Err(_) => {
+                        println!("An error has occured sending.");
+                        break;
+                    }
+                }
 
                 if let Some(fps) = loop_helper.report_rate() {
                     println!("FPS: {:.4}", fps)
@@ -70,7 +74,7 @@ impl TopicPublisher for TopicPublisherService {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn error::Error>> {
     let opt = Opt::from_args();
-    let addr = "[::1]:50051".parse().unwrap();
+    let addr = "[::1]:50052".parse().unwrap();
     Server::builder()
         .add_service(TopicPublisherServer::new(TopicPublisherService {
             images: Arc::new(load_images(opt.image_path, &opt.extension)?),

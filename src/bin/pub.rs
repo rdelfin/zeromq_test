@@ -41,6 +41,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         let mut buf: Vec<u8> = Vec::new();
         image.encode(&mut buf).unwrap();
         publisher.send(&buf, 0).unwrap();
+        publisher.send(&images[idx], 0).unwrap();
 
         if let Some(fps) = loop_helper.report_rate() {
             println!("FPS: {:.4}", fps)
@@ -77,6 +78,6 @@ fn image_from_data(data: &Vec<u8>, ts: u64) -> Image {
         width: 2048,
         height: 1280,
         channels: 3,
-        data: data.clone(),
+        // data: data.clone(),
     }
 }

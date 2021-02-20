@@ -45,12 +45,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         let diff = (ts - image.timestamp) as f64 / 1e6;
         latencies.push(diff);
         println!(
-            "Got image. Latency: {:.4}ms width: {}, height: {}, channels: {}, bytes: {}",
-            diff,
-            image.width,
-            image.height,
-            image.channels,
-            image.data.len()
+            "Got image. Latency: {:.4}ms width: {}, height: {}, channels: {}",
+            diff, image.width, image.height, image.channels,
         );
     }
 

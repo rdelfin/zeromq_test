@@ -8,11 +8,14 @@ edition = "2018"
 async-stream = "0.2"
 capnp = "0.14"
 ctrlc = "3.1.7"
+futures-core = "0.3"
+futures-util = "0.3"
 prost = "0.7"
 rand = "0.8"
 spin_sleep = "1.0.0"
 structopt = "0.3.21"
-tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time"] }
+tokio = { version = "1.2", features = ["rt-multi-thread", "macros", "sync", "time"] }
+tokio-stream = "0.1.3"
 tonic = "0.4"
 zmq = { git = "https://github.com/erickt/rust-zmq", rev = "eede4315e10eccddec4348561c42ded534e6001e", features = ["vendored"] }
 

@@ -1,5 +1,5 @@
 pub mod data {
-    include!(concat!(env!("OUT_DIR"), "/zeromq_test.data.rs"));
+    tonic::include_proto!("zeromq_test.data");
 }
 
 pub mod capnp_structs {

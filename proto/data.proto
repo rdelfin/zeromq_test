@@ -20,5 +20,5 @@ message Image {
 message SubscribeRequest {}
 
 service TopicPublisher {
-    rpc subscribe(SubscribeRequest) returns (stream Image) {}
+    rpc Subscribe(SubscribeRequest) returns (stream Image) {}
 }

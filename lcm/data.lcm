@@ -1,0 +1,10 @@
+package lcm_data;
+
+struct image {
+    int64_t timestamp;
+    int32_t width;
+    int32_t height;
+    int32_t channels;
+    int64_t nbytes;
+    byte data[nbytes];
+}

@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     let mut loop_helper = LoopHelper::builder()
         .report_interval_s(0.5) // report every half a second
         .build_with_target_rate(25.0);
-    let images = load_images(opt.image_path, &opt.extension)?;
+    let mut images = load_images(opt.image_path, &opt.extension)?;
     let mut idx = 0;
     let mut lcm = Lcm::new()?;
 
@@ -36,8 +36,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
             .duration_since(SystemTime::UNIX_EPOCH)?
             .as_nanos() as u64;
 
-        let img = image_from_data(&images[idx], ts);
-        lcm.publish("cameras", &img)?;
+        images[idx].timestamp = ts as i64;
+        lcm.publish("cameras", &images[idx])?;
 
         if let Some(fps) = loop_helper.report_rate() {
             println!("FPS: {:.4}", fps)
@@ -46,7 +46,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     }
 }
 
-fn load_images(dir: PathBuf, ext: &str) -> Result<Vec<Vec<u8>>, Box<dyn error::Error>> {
+fn load_images(dir: PathBuf, ext: &str) -> Result<Vec<Image>, Box<dyn error::Error>> {
     Ok(fs::read_dir(dir.as_path())?
         .filter(|e| match e {
             Ok(entry) => {
@@ -65,6 +65,14 @@ fn load_images(dir: PathBuf, ext: &str) -> Result<Vec<Vec<u8>>, Box<dyn error::E
         .collect::<Result<Vec<_>, _>>()?
         .iter()
         .map(|data| data[32..].into())
+        .map(|data: Vec<u8>| Image {
+            timestamp: 0,
+            width: 2048,
+            height: 1280,
+            channels: 3,
+            nbytes: data.len() as i64,
+            data,
+        })
         .collect())
 }
 
